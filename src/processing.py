@@ -1,3 +1,4 @@
+from datetime import datetime
 from typing import Any, Dict, List, Optional, TypeAlias
 
 # Определение Type Alias для улучшения читаемости
@@ -20,18 +21,18 @@ def filter_by_state(data: ItemListType, state: Optional[str] = "EXECUTED") -> It
 
 # Выход функции со статусом по умолчанию 'EXECUTED'
 executed_items: ItemListType = filter_by_state(data)
-print(executed_items)
+print("Executed Items:", executed_items)
 
 # Выход функции, если вторым аргументом передано 'CANCELED'
 canceled_items: ItemListType = filter_by_state(data, state="CANCELED")
-print(canceled_items)
+print("Canceled Items:", canceled_items)
 
 
 def sort_by_date(id_state_date: ItemListType, reverse: bool = True) -> ItemListType:
     """Функция, которая принимает список словарей с необязательным параметром
     и возвращает новый список, отсортированный по дате"""
-    return sorted(id_state_date, key=lambda item: item["date"], reverse=reverse)
+    return sorted(id_state_date, key=lambda item: datetime.fromisoformat(item["date"]), reverse=reverse)
 
 
 sorted_data: ItemListType = sort_by_date(data)
-print(sorted_data)
+print("Sorted Data:", sorted_data)

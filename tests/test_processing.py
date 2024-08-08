@@ -1,25 +1,17 @@
 import pytest
+from src.processing import filter_by_state
 
-data = [
-    {'date': '2022-01-01T12:00:00', 'id': 1, 'state': 'EXECUTED'},
-    {'date': '2022-01-02T12:00:00', 'id': 2, 'state': 'EXECUTED'},
-    {'date': '2022-01-01T12:00:00', 'id': 3, 'state': 'EXECUTED'},
-    {'date': '2021-12-31T12:00:00', 'id': 4, 'state': 'EXECUTED'},
-    {'date': 'invalid date', 'id': 5, 'state': 'EXECUTED'},
-    {'date': '2018-09-12T21:27:25.241689', 'id': 594226727, 'state': 'CANCELED'},
-    {'date': '2018-10-14T08:21:33.419441', 'id': 615064591, 'state': 'CANCELED'},
+test_cases = [
+    ("EXECUTED", [1, 2, 3, 4, 5]),
+    ("CANCELED", [594226727, 615064591]),
+    ("UNKNOWN_STATUS", []),
 ]
 
-def filter_by_state(data, state):
-    """Фильтрация данных по статусу"""
-    return [item for item in data if item['state'] == state]
 
-@pytest.mark.parametrize("state, expected", [
-    ("EXECUTED", [item for item in data if item['state'] == 'EXECUTED']),
-    ("CANCELED", [item for item in data if item['state'] == 'CANCELED']),
-    ("UNKNOWN_STATUS", []),
-])
-def test_filter_by_state(state, expected):
-    """Тестирование фильтрации по статусам"""
-    result = filter_by_state(data, state)
+@pytest.mark.parametrize("state, expected_ids", test_cases)
+def test_filter_by_state(sample_data, state, expected_ids):
+    # Получение результата на основе переданных `expected_ids`
+    expected = [item for item in sample_data if item["id"] in expected_ids]
+
+    result = filter_by_state(sample_data, state)
     assert result == expected
